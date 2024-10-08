@@ -67,18 +67,18 @@ class TestConvertsToJsonSchemaWithRefs < Minitest::Test
         "created_at" => {type: "string"},
         "updated_at" => {type: "string"},
         "posts_attributes" => {type: "array",
-                               items: {:$ref => "#/definitions/post"}}
+                               items: {:$ref => "#/definitions/test_converts_to_json_schema_with_refs/post"}}
       },
       required: %w[id name created_at updated_at],
       additionalProperties: false,
       definitions: {
-        "post" => {
+        "test_converts_to_json_schema_with_refs/post" => {
           type: "object",
           properties: {
             "id" => {type: "integer"},
             "title" => {type: "string"}
           },
-          required: ["id"]
+          required: []
         }
       }
     }
