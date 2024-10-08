@@ -28,4 +28,22 @@ class TestConvertsToJsonSchemaWithRefs < Minitest::Test
     assert_includes schema[:properties].keys, 'name'
     assert_includes schema[:properties].keys, 'age'
   end
+
+  def test_comprehensive_schema_generation
+    expected_schema = {
+      type: 'object',
+      properties: {
+        id: { type: 'integer' },
+        name: { type: 'string' },
+        age: { type: ['integer', 'null'] },
+        created_at: { type: 'string', format: 'date-time' },
+        updated_at: { type: 'string', format: 'date-time' }
+      },
+      required: ['id', 'name', 'created_at', 'updated_at'],
+      additionalProperties: false
+    }
+
+    schema = ConvertsToJsonSchemaWithRefs.generate(User)
+    assert_equal expected_schema, schema
+  end
 end
