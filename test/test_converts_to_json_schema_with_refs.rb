@@ -5,6 +5,9 @@ require 'sqlite3'
 require_relative '../lib/active_json_schema/converts_to_json_schema_with_refs'
 
 class TestConvertsToJsonSchemaWithRefs < Minitest::Test
+  # Define a simple ActiveRecord model
+  class User < ActiveRecord::Base; end
+
   def setup
     # Set up an in-memory SQLite database
     ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: ':memory:')
@@ -17,9 +20,6 @@ class TestConvertsToJsonSchemaWithRefs < Minitest::Test
         t.timestamps
       end
     end
-
-    # Define a simple ActiveRecord model
-    class User < ActiveRecord::Base; end
   end
 
   def test_generate_schema
