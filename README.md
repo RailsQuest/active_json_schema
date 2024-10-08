@@ -7,7 +7,7 @@ ActiveJsonSchema is a Ruby gem that extends ActiveRecord models to generate JSON
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'active_json_schema'
+gem "active_json_schema"
 ```
 
 And then execute:

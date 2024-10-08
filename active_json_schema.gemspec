@@ -10,15 +10,15 @@ Gem::Specification.new do |spec|
 
   spec.summary = "Generate JSON Schema representations for ActiveRecord models"
   spec.description = "ActiveJsonSchema extends ActiveRecord models to generate JSON Schema representations, including support for associations."
-  spec.homepage = "https://github.com/pingortle/active_json_schema"
+  spec.homepage = "https://github.com/RailsQuest/active_json_schema"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.0.0"
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/pingortle/active_json_schema"
-  spec.metadata["changelog_uri"] = "https://github.com/pingortle/active_json_schema/blob/main/CHANGELOG.md"
+  spec.metadata["source_code_uri"] = "https://github.com/RailsQuest/active_json_schema"
+  spec.metadata["changelog_uri"] = "https://github.com/RailsQuest/active_json_schema/blob/main/CHANGELOG.md"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
