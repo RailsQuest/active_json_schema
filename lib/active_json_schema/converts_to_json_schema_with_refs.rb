@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ConvertsToJsonSchemaWithRefs
+  class UnsupportedAssociationType < StandardError; end
+
   def self.generate(model_class, only: nil, associations: {}, additional_properties: false)
     new(model_class, only: only, associations: associations, additional_properties: additional_properties).generate
   end
@@ -15,7 +17,7 @@ class ConvertsToJsonSchemaWithRefs
 
   def generate
     schema = {
-      type: 'object',
+      type: "object",
       properties: properties_for(@model_class, @only, @associations),
       required: required_properties(@model_class, @only),
       additionalProperties: @additional_properties
@@ -27,6 +29,12 @@ class ConvertsToJsonSchemaWithRefs
   private
 
   def properties_for(model_class, only, associations)
+    puts "properties_for(...)"
+    puts "model_class: #{model_class}"
+    puts "only: #{only}"
+    puts "associations: #{associations}"
+    puts
+
     properties = {}
 
     model_class.columns_hash.each do |column_name, column_info|
@@ -35,13 +43,21 @@ class ConvertsToJsonSchemaWithRefs
       properties[column_name] = column_to_json_property(column_info)
     end
 
+    puts "associations.each do |association_name, options|"
     associations.each do |association_name, options|
+      puts "association_name: #{association_name}"
       association = model_class.reflect_on_association(association_name)
+      puts "association: #{association}"
       next unless association
 
       definition_name = association.klass.name.underscore
       if options.empty?
-        nested_schema = association.klass.to_json_schema
+        klass = association.klass
+        unless klass.ancestors.include?(ActiveJsonSchema::ToJsonSchema)
+          raise UnsupportedAssociationType.new("Please include ActiveJsonSchema::ToJsonSchema in #{klass} or specify association options.")
+        end
+
+        nested_schema = klass.to_json_schema
         @definitions.merge!(nested_schema[:definitions] || {})
         @definitions[definition_name] ||= nested_schema.except(:definitions)
       else
@@ -56,11 +72,14 @@ class ConvertsToJsonSchemaWithRefs
   end
 
   def generate_definition(model_class, options)
+    puts "generate_definition(...)"
+    puts "model_class: #{model_class}"
+    puts "options: #{options}"
     only = options[:only]
     nested_associations = options[:associations] || {}
 
     {
-      type: 'object',
+      type: "object",
       properties: properties_for(model_class, only, nested_associations),
       required: required_properties(model_class, only)
     }
@@ -73,13 +92,13 @@ class ConvertsToJsonSchemaWithRefs
   end
 
   def column_to_json_property(column_info)
-    property = { type: sql_type_to_json_type(column_info.type) }
+    property = {type: sql_type_to_json_type(column_info.type)}
 
     case column_info.type
     when :string, :text
       property[:maxLength] = column_info.limit if column_info.limit
     when :integer, :bigint
-      property[:minimum] = 0 if column_info.sql_type.include?('unsigned')
+      property[:minimum] = 0 if column_info.sql_type.include?("unsigned")
     when :decimal
       property[:multipleOf] = 10**-column_info.scale if column_info.scale
     end
@@ -91,11 +110,11 @@ class ConvertsToJsonSchemaWithRefs
     case association.macro
     when :has_many, :has_and_belongs_to_many
       {
-        type: 'array',
-        items: { "$ref": "#/definitions/#{definition_name}" }
+        type: "array",
+        items: {"$ref": "#/definitions/#{definition_name}"}
       }
     when :belongs_to, :has_one
-      { "$ref": "#/definitions/#{definition_name}" }
+      {"$ref": "#/definitions/#{definition_name}"}
     else
       raise "Unsupported association type: #{association.macro}"
     end
@@ -104,17 +123,17 @@ class ConvertsToJsonSchemaWithRefs
   def sql_type_to_json_type(sql_type)
     case sql_type
     when :string, :text
-      'string'
+      "string"
     when :integer, :bigint
-      'integer'
+      "integer"
     when :float, :decimal
-      'number'
+      "number"
     when :boolean
-      'boolean'
+      "boolean"
     when :date, :datetime, :time
-      'string'
+      "string"
     else
-      'string'
+      "string"
     end
   end
 end

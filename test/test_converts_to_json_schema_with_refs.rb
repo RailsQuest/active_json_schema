@@ -4,6 +4,7 @@ require "active_record"
 require "sqlite3"
 
 require_relative "../lib/active_json_schema/converts_to_json_schema_with_refs"
+require_relative "../lib/active_json_schema/to_json_schema"
 
 class TestConvertsToJsonSchemaWithRefs < Minitest::Test
   include PrettyDiffs
@@ -68,8 +69,10 @@ class TestConvertsToJsonSchemaWithRefs < Minitest::Test
         "age" => {type: "integer"},
         "created_at" => {type: "string"},
         "updated_at" => {type: "string"},
-        "posts_attributes" => {type: "array",
-                               items: {:$ref => "#/definitions/test_converts_to_json_schema_with_refs/post"}}
+        "posts_attributes" => {
+          type: "array",
+          items: {:$ref => "#/definitions/test_converts_to_json_schema_with_refs/post"}
+        }
       },
       required: %w[id name created_at updated_at],
       additionalProperties: false,
