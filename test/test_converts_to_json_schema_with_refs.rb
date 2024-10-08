@@ -1,10 +1,12 @@
 require "minitest/autorun"
+require "pretty_diffs"
 require "active_record"
 require "sqlite3"
 
 require_relative "../lib/active_json_schema/converts_to_json_schema_with_refs"
 
 class TestConvertsToJsonSchemaWithRefs < Minitest::Test
+  include PrettyDiffs
   # Define a simple ActiveRecord model
   class Post < ActiveRecord::Base; end
 
