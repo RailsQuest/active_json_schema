@@ -4,5 +4,5 @@ require_relative "active_json_schema/version"
 
 module ActiveJsonSchema
   class Error < StandardError; end
-  # Your code goes here...
+  require_relative "active_json_schema/converts_to_json_schema_with_refs"
 end
