@@ -33,11 +33,11 @@ class TestConvertsToJsonSchemaWithRefs < Minitest::Test
     expected_schema = {
       type: 'object',
       properties: {
-        id: { type: 'integer' },
-        name: { type: 'string' },
-        age: { type: ['integer', 'null'] },
-        created_at: { type: 'string', format: 'date-time' },
-        updated_at: { type: 'string', format: 'date-time' }
+        'id' => { type: 'integer' },
+        'name' => { type: 'string' },
+        'age' => { type: 'integer' },
+        'created_at' => { type: 'string' },
+        'updated_at' => { type: 'string' }
       },
       required: ['id', 'name', 'created_at', 'updated_at'],
       additionalProperties: false
