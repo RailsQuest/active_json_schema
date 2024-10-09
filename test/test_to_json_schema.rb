@@ -56,7 +56,6 @@ class TestToJsonSchema < Minitest::Test
   def test_generate_schema_with_convenience_method
     schema = User.to_json_schema(only: %w[name age], associations: %w[posts])
 
-    puts schema.inspect
     assert_equal "object", schema[:type]
     assert_includes schema[:properties].keys, "name"
     assert_includes schema[:properties].keys, "age"

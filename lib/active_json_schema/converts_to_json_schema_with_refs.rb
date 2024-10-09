@@ -29,12 +29,6 @@ class ConvertsToJsonSchemaWithRefs
   private
 
   def properties_for(model_class, only, associations)
-    puts "properties_for(...)"
-    puts "model_class: #{model_class}"
-    puts "only: #{only}"
-    puts "associations: #{associations}"
-    puts
-
     properties = {}
 
     model_class.columns_hash.each do |column_name, column_info|
@@ -43,11 +37,8 @@ class ConvertsToJsonSchemaWithRefs
       properties[column_name] = column_to_json_property(column_info)
     end
 
-    puts "associations.each do |association_name, options|"
     associations.each do |association_name, options|
-      puts "association_name: #{association_name}"
       association = model_class.reflect_on_association(association_name)
-      puts "association: #{association}"
       next unless association
 
       definition_name = association.klass.name.underscore
@@ -72,9 +63,6 @@ class ConvertsToJsonSchemaWithRefs
   end
 
   def generate_definition(model_class, options)
-    puts "generate_definition(...)"
-    puts "model_class: #{model_class}"
-    puts "options: #{options}"
     only = options[:only]
     nested_associations = options[:associations] || {}
 
