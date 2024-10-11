@@ -2,6 +2,7 @@
 
 class ConvertsToJsonSchemaWithRefs
   class UnsupportedAssociationType < StandardError; end
+  SchemaAttributeInfo = Struct.new(:type, keyword_init: true)
 
   def self.generate(model_class, only: nil, associations: {}, additional_properties: false)
     new(model_class, only: only, associations: associations, additional_properties: additional_properties).generate
@@ -31,10 +32,14 @@ class ConvertsToJsonSchemaWithRefs
   def properties_for(model_class, only, associations)
     properties = {}
 
-    model_class.columns_hash.each do |column_name, column_info|
-      next unless only.nil? || only.include?(column_name)
-
-      properties[column_name] = column_to_json_property(column_info)
+    Array(only || model_class.column_names).each do |name, type|
+      properties[name] = column_to_json_property(
+        if type
+          SchemaAttributeInfo.new(type: type)
+        else
+          model_class.columns_hash[name] || SchemaAttributeInfo.new(type: "string")
+        end
+      )
     end
 
     associations.each do |association_name, options|

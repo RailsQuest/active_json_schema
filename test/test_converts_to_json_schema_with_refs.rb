@@ -79,7 +79,10 @@ class TestConvertsToJsonSchemaWithRefs < Minitest::Test
       definitions: {
         "test_converts_to_json_schema_with_refs/post" => {
           type: "object",
-          properties: {},
+          properties: {
+            id: {type: "string"},
+            title: {type: "string"}
+          },
           required: []
         }
       }
